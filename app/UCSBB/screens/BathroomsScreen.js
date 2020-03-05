@@ -5,19 +5,27 @@ import {
   Text,
   View,
   Dimensions,
+  AsyncStorage,
 } from 'react-native';
 import CollapsibleList from "react-native-collapsible-list";
 import ListElement from '../components/ListElement';
 import { MonoText } from '../components/StyledText';
 import {db} from '../firebase.js';
-import Accordian from '../components/Accordian'
-import { YellowBox } from 'react-native';
-
+import Accordian from '../components/Accordian';
+import Home from './SettingsScreen';
+import { YellowBox } from 'react-native'; // ignore warnings for now
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 YellowBox.ignoreWarnings(['Warning: Failed prop type: Invalid prop']);
 
 var rootRef = db.ref('/Buildings');
 var buildingList;
+
+
+const home_filter = new Home();
+// home_filter.loadAsyncData();
+home.loadAsyncData();
+console.log(home_filter.state.genderPreference)
+
 
 // display data objects when database is modified
 rootRef.on("child_changed", function(snapshot) {
@@ -38,16 +46,29 @@ export default function BathroomsScreen() {
 
   for(var i=0; i<buildingList.length; i++){
     
+    // filter by gender
+    var query = rootRef.child(buildingList[i]);
+    if (home_filter.state.genderPreference=='cyan'){
+      query = query.orderByChild('Gender').equalTo('male');
+    }
+    else if (home_filter.state.genderPreference=='pink'){
+      query = query.orderByChild('Gender').equalTo('female');
+    }
+
     // retrieve children
-    rootRef.child(buildingList[i]).on("value", function(snapshot){
+    query.on("value", function(snapshot){
       var data = snapshot.val();
       var roomList = Object.keys(data);
 
       var views = [];
 
       for (var j=0; j<roomList.length; j++){
-
         room = roomList[j];
+
+        // filter by accessibility
+        if (home_filter.state.isHandicap == true && data[room].Accessibility == 'False')
+          continue;
+
         var flag_access = data[room].Accessibility;
         var accessChair = ((flag_access=='True') ? 'wheelchair' : 'none');
         var listStyle = ((data[room].Gender=='male') ? styles.collapsibleItemMale : styles.collapsibleItemFemale);
@@ -57,7 +78,7 @@ export default function BathroomsScreen() {
         //push room names, gender, and accessibility into array called views
         views.push({
           ID: buildingList[i]+roomList[j],
-          room: rootRef.child(buildingList[i]).child(roomList[j]).key,
+          room: room,
           gender: data[roomList[j]].Gender,
           access: accessChair,
       });

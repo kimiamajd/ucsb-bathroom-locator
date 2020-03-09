@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
 import {db} from '../firebase.js';
-//import console = require('console');
 
 var rootRef = db.ref('/Buildings');
 console.log(rootRef)
@@ -88,11 +87,15 @@ export default class UCSBBMapView extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			region: {
-	      		latitude: LAT,
-				longitude: LONG,
-				latitudeDelta: 0.0001015,
-				longitudeDelta: 0.000911,
+			camera: {
+				center: {
+	      			latitude: LAT,
+					longitude: LONG,
+				},
+				zoom: 18,
+				pitch: 0,
+				heading: 0,
+				altitude: 0
 			},
 			buildings: [],
 			markers: [],
@@ -110,8 +113,8 @@ export default class UCSBBMapView extends Component {
 		if(region.latitude < LAT - 0.0072){
 			region.latitude = LAT - 0.0072;
 		}
-		if(region.longitude > LONG + 0.008){
-			region.longitude = LONG + 0.008;
+		if(region.longitude > LONG + 0.007){
+			region.longitude = LONG + 0.007;
 		}
 		if(region.longitude < LONG - 0.0094){
 			region.longitude = LONG - 0.0094;
@@ -126,7 +129,7 @@ export default class UCSBBMapView extends Component {
 			<View style={styles.container}>
 		  	  <MapView
 			    style = {styles.mapStyle}
-			    region = {this.state.region}
+			    initialCamera = {this.state.camera}
 			    ref = {map => {this.map = map}}
 			    onRegionChangeComplete={(region) => {this.onRegionChangeComplete(region)}}
 			    mapType = "standard"

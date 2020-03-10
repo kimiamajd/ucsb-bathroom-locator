@@ -7,13 +7,6 @@ var rootRef = db.ref('/Buildings');
 console.log(rootRef)
 var buildingList;
 
-// display data objects when database is modified
-rootRef.on("child_changed", function(snapshot) {
-	console.log(snapshot.val());
-}, function (errorObject) {
-	console.log("The read failed: " + errorObject.code);
-});
-
 // retrieve keys
 rootRef.once("value", (snapshot) =>{
 	var data = snapshot.val();
@@ -42,65 +35,36 @@ export default class UCSBBMapView extends Component {
 			this.state.buildings = buildingList;
 			var views = [];
 			for(var i=0; i<buildingList.length; i++){
-				if(gender != "all"){
-					//this line gets a query from the database with only items that Gender = the gender parameter
-					rootRef.child(buildingList[i]).orderByChild("Gender").equalTo(gender).once("value", function(snapshot){
-						//forEach iterates through all the results
-						snapshot.forEach( (child) => {
-							//val() gets the actual data from each of the objects
-							let data = child.val();
-							var genderColor = "rgb(255,20,147)";
+				rootRef.child(buildingList[i]).once("value", function(snapshot){
+					//forEach iterates through all the results
+					snapshot.forEach( (child) => {
+						//val() gets the actual data from each of the objects
+						let data = child.val();
+						var genderColor = "rgb(255,20,147)";
 
-							if(data.Gender == "female"){
-								genderColor = "rgb(255,20,147)";;
-							}
-							else if(data.Gender == "male"){
-								genderColor = "#0000FF";
-							}
-							else{
-								genderColor = "#32CD32";
-							}
-							//ensure that latitude and longitude exist and that accesibility rules from settings are followed
-							if(data.Latitude && data.Longitude && !(accessibility && !data.Accessibility)){
-								console.log('HUzzah')
-								views.push({
-									title: child.key,
-									coordinates: {latitude: data.Latitude, longitude: data.Longitude},
-									pinColor: genderColor,
-									description: data.Gender,
-								})}
-							})
-					}
-					);
-				} else{ //necesssary because equalTo doesn't work with regex :(
-					rootRef.child(buildingList[i]).once("value", function(snapshot){
-						snapshot.forEach( (child) => {
-							let data = child.val();
-							console.log(child);
-							var genderColor = "rgb(255,20,147)";
-
-							if(data.Gender == "female"){
-								genderColor = "rgb(255,20,147)";;
-							}
-							else if(data.Gender == "male"){
-								genderColor = "#0000FF";
-							}
-							else{
-								genderColor = "#32CD32";
-							}
-							//ensure that latitude and longitude exist and that accesibility rules from settings are followed
-							if(data.Latitude && data.Longitude && !(accessibility && !data.Accessibility)){
-								console.log('HUzzah')
-								views.push({
-									title: child.key,
-									coordinates: {latitude: data.Latitude, longitude: data.Longitude},
-									pinColor: genderColor,
-									description: data.Gender,
-								})}
-							})
-					}
-					);
+						if(data.Gender == "female"){
+							genderColor = "rgb(255,20,147)";;
+						}
+						else if(data.Gender == "male"){
+							genderColor = "#0000FF";
+						}
+						else{
+							genderColor = "#32CD32";
+						}
+						let mf = ["male", "female"]
+						let followsGender = !mf.includes(gender) || data.Gender == gender;
+						let followsAccessibility = !(accessibility && !data.Accessibility);
+						//ensure that latitude and longitude exist and that accesibility rules from settings are followed
+						if(data.Latitude && data.Longitude && followsAccessibility && followsGender){
+							views.push({
+								title: child.key,
+								coordinates: {latitude: data.Latitude, longitude: data.Longitude},
+								pinColor: genderColor,
+								description: data.Gender,
+							})}
+						})
 				}
+				);
 			}
 			this.setState({
 				buildings: buildingList, 
@@ -111,7 +75,7 @@ export default class UCSBBMapView extends Component {
 	}
 
 	componentDidMount(){
-		this.loadMarkers("all", true);
+		this.loadMarkers("female", true);
 	}
 
 	constructor(props) {

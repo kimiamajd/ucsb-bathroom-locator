@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Dimensions,
+  AsyncStorage,
 } from 'react-native';
 import CollapsibleList from "react-native-collapsible-list";
 import ListElement from '../components/ListElement';
@@ -19,13 +20,6 @@ YellowBox.ignoreWarnings(['Warning: Failed prop type: Invalid prop']);
 var rootRef = db.ref('/Buildings');
 var buildingList;
 
-// display data objects when database is modified
-rootRef.on("child_changed", function(snapshot) {
-  console.log(snapshot.val());
-}, function (errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-
 // retrieve keys
 rootRef.on("value", function(snapshot){
   var data = snapshot.val();
@@ -37,7 +31,6 @@ export default function BathroomsScreen() {
   var viewsArray = [];
 
   for(var i=0; i<buildingList.length; i++){
-
     // retrieve children
     rootRef.child(buildingList[i]).on("value", function(snapshot){
       var data = snapshot.val();
@@ -73,20 +66,20 @@ export default function BathroomsScreen() {
       title = {buildingList[i]}
       data = {viewsArray[i]}
       />
-      )
+    )
 
   }
 
   return (
     <View style={styles.container}>
-    <ScrollView
-    key={0}
-    style={styles.container}
-    contentContainerStyle={styles.contentContainer}>
-    <View style={styles.container}>   
-    {lists}
-    </View>
-    </ScrollView>
+      <ScrollView
+        key={0}
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}>
+      <View style={styles.container}>   
+        {lists}
+      </View>
+      </ScrollView>
     </View>
     );
 }

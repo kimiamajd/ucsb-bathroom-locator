@@ -75,7 +75,7 @@ export default class UCSBBMapView extends Component {
 	}
 
 	componentDidMount(){
-		this.loadMarkers("female", true);
+		this.loadMarkers("all", true);
 	}
 
 	constructor(props) {

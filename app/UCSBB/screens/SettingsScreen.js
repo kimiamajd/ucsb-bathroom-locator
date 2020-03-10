@@ -99,7 +99,7 @@ export default class Home extends Component {
       this.props.navigation.state.params.genderPreferenceIndex : 0;
 
     //defines buttonRow text
-    buttons = [
+    let buttons = [
       { element: () => <Text style={styles.buttonGroupText}>{this.genderPreferences[0]}</Text> },
       { element: () => <Text style={styles.buttonGroupText}>{this.genderPreferences[1]}</Text> },
       { element: () => <Text style={styles.buttonGroupText}>{this.genderPreferences[2]}</Text> }

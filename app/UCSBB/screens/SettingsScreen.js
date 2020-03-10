@@ -6,9 +6,11 @@ import {
   AsyncStorage
 } from 'react-native';
 import { Card, Text, ButtonGroup, Button } from 'react-native-elements';
+import {db} from '../firebase.js';
 
 const ACCESSIBILITY_TOGGLE_KEY = 'accessibility';
 const GENDER_PREFERENCE_KEY = 'genderPreference';
+var ref = db.ref('/Storage');
 
 export default class Home extends Component {
 
@@ -72,6 +74,9 @@ export default class Home extends Component {
     try {
       await AsyncStorage.setItem(ACCESSIBILITY_TOGGLE_KEY, JSON.stringify(isHandicap))
       this.setState({ isHandicap });
+      ref.update({
+        access: isHandicap
+      });
     } catch (e) {
       console.log(e);
     }
@@ -83,6 +88,9 @@ export default class Home extends Component {
       await AsyncStorage.setItem(GENDER_PREFERENCE_KEY, JSON.stringify(genderPreferenceIndex));
       this.props.navigation.setParams({ genderPreferenceIndex });
       this.setState({ genderPreference: this.colors[JSON.stringify(genderPreferenceIndex)]})
+      ref.update({
+        gender: genderPreferenceIndex
+      });
     } catch (e) {
       console.log(e);
     }
@@ -111,8 +119,8 @@ export default class Home extends Component {
     //terminal whenever anything is rerendered. Use this to debug and make sure things
     //are working correctly
     //------------------------------------------------------------------------------------//
-    console.log('Accessibility: ' + this.state.isHandicap);
-    console.log('Gender Preference: ' + this.state.genderPreference);
+    // console.log('Accessibility: ' + this.state.isHandicap);
+    // console.log('Gender Preference: ' + this.state.genderPreference);
 
     return (
       <View style={styles.container}>

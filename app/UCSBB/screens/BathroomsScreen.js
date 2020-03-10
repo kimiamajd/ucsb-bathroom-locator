@@ -35,10 +35,10 @@ class BathroomsScreen extends React.Component {
   };
 
   render () {
-  var lists = [];
-  var viewsArray = [];
+    var lists = [];
+    var viewsArray = [];
 
-  for(var i=0; i<buildingList.length; i++){
+    for(var i=0; i<buildingList.length; i++){
     // retrieve children
     rootRef.child(buildingList[i]).on("value", function(snapshot){
       var data = snapshot.val();
@@ -61,22 +61,35 @@ class BathroomsScreen extends React.Component {
           room: rootRef.child(buildingList[i]).child(roomList[j]).key,
           gender: data[roomList[j]].Gender,
           access: accessChair,
-
-    });
+        });
+      }    
+      viewsArray.push(views);
+      //push array with room info into an array where each element contains an array of roominfo for a specific building
+      });
     
     lists.push(
+      <Accordian
+      key={buildingList[i]}
+      numberOfVisibleItems={0}
+      title = {buildingList[i]}
+      data = {viewsArray[i]}
+      navigation = {this.props.navigation}
+      />
+      )};
 
-
-  return (
-    <View style={styles.container}>
+    return (
+      <View style={styles.container}>
       <ScrollView
-        key={0}
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
+      key={0}
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}>
       <View style={styles.container}>   
-        {lists}
+      {lists}
       </View>
-
+      </ScrollView>
+      </View>
+      );
+  }
 }
 
 

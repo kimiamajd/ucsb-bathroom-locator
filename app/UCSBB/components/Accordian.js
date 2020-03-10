@@ -32,7 +32,7 @@ export default class Accordian extends Component{
                     scrollEnabled={false}
                     renderItem={({item, index}) => (
                         <View>
-                            <TouchableOpacity style={[styles.childRow, item.gender == 'male' ? styles.male : styles.female]}>
+                            <TouchableOpacity style={[styles.childRow, item.gender == 'male' ? styles.male : styles.female]} onPress = {() => {this.props.navigation.navigate('Map') }}>
                                 <Text style={[styles.font, styles.listItemText]} >{item.room}</Text>
                                 <View style={styles.genderIcons}>
                                     <InfoIcon name={item.gender == 'neutral' ? 'user' : item.gender} size={24} />

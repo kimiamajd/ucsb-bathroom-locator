@@ -14,6 +14,9 @@ import {db} from '../firebase.js';
 import Accordian from '../components/Accordian'
 import { YellowBox } from 'react-native';
 
+import { Button} from 'react-native';
+
+
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 YellowBox.ignoreWarnings(['Warning: Failed prop type: Invalid prop']);
 
@@ -26,7 +29,12 @@ rootRef.on("value", function(snapshot){
   buildingList = Object.keys(data);
 });
 
-export default function BathroomsScreen() {
+class BathroomsScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Bathrooms by Building',
+  };
+
+  render () {
   var lists = [];
   var viewsArray = [];
 
@@ -53,22 +61,11 @@ export default function BathroomsScreen() {
           room: rootRef.child(buildingList[i]).child(roomList[j]).key,
           gender: data[roomList[j]].Gender,
           access: accessChair,
-        });
-      }
-      viewsArray.push(views);
+
     });
     
-    
     lists.push(
-      <Accordian
-      key={buildingList[i]}
-      numberOfVisibleItems={0}
-      title = {buildingList[i]}
-      data = {viewsArray[i]}
-      />
-    )
 
-  }
 
   return (
     <View style={styles.container}>
@@ -79,14 +76,9 @@ export default function BathroomsScreen() {
       <View style={styles.container}>   
         {lists}
       </View>
-      </ScrollView>
-    </View>
-    );
+
 }
 
-BathroomsScreen.navigationOptions = {
-  title: 'Bathrooms by Building',
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -146,3 +138,6 @@ const styles = StyleSheet.create({
     padding: 20
   },
 });
+
+export default BathroomsScreen;
+

@@ -16,7 +16,6 @@ import { YellowBox } from 'react-native';
 
 import { Button} from 'react-native';
 
-
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 YellowBox.ignoreWarnings(['Warning: Failed prop type: Invalid prop']);
 
@@ -90,7 +89,10 @@ class BathroomsScreen extends React.Component {
       </View>
       );
   }
-}
+
+BathroomsScreen.navigationOptions = {
+  title: 'Bathrooms by Building',
+};
 
 
 const styles = StyleSheet.create({

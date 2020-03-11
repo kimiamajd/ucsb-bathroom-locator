@@ -37,6 +37,8 @@ install node.js from <https://nodejs.org/en/download/>, or use your favorite com
 
 `npm install react-native-maps`
 
+`npm i react-native-elements`
+
 `npm install react-native-collapsible-list`
 
 `npm install --save firebase`

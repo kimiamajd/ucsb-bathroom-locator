@@ -19,6 +19,12 @@ const LAT = 34.413963;
 const LONG = -119.846446;
 const {width, height} = Dimensions.get('window');
 
+export const getCurrentLocation = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
+  });
+};
+
 export default class UCSBBMapView extends Component {
 
 	//Gender must be either "male", "female", or "all" or else this will not work!!
@@ -95,6 +101,21 @@ export default class UCSBBMapView extends Component {
 			markers: [],
 		}
 	}
+
+	componentDidMount() {
+    return getCurrentLocation().then(position => {
+      if (position) {
+        this.setState({
+          region: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.003,
+            longitudeDelta: 0.003,
+          },
+        });
+      }
+    });
+  }
 
 	onRegionChange(region) {
 		this.setState({region});

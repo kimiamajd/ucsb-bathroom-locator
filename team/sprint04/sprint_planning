@@ -1,0 +1,16 @@
+(see 2-18-3PM.md)
+Date: 2/18/2020 Attendence: Everyone is here (Lucas, Cameron, Derek, Kimi, Nick, Jack)
+
+Notes:
+- assign at least 2 people to each major issue so that there is an extra set of eyes to check, test code, revise, etc.
+- continue to use feature branches and make PRs, then have someone review them before they can be merged to testing
+- make sure code is bug-free before making PR
+- all minor issues have been completed or closed
+
+Major features to work on moving forward:
+
+Firebase Integration (Lucas and Jack)
+Building Clickable Interface (Derek and Kimi)
+Bathroom List UI (Kimi and Nick)
+Testing (Lucas and Nick)
+Settings Tab (Cameron and Derek)

@@ -1,5 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
+import {useState} from 'react';
 import {
   Image,
   Platform,
@@ -17,18 +18,29 @@ import { MonoText } from '../components/StyledText';
 
 import WelcomePopup from '../components/WelcomePopup';
 
-export default function MapScreen() {
+
+class MapScreen extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
+  render() {
+  //get parameters from routing 
+  const { params } = this.props.navigation.state;
+  const selectedRoomLatitude = params ? params.latitude : null;
+  const selectedRoomLongitude = params ? params.longitude : null;
+
   return (
     <>
       <WelcomePopup pagekey={"uniqukey"} title={"Welcome"} description={"Head to settings in the bottom right to filter bathrooms shown on the map!"}/>
-      <UCSBBMapView />
+      <UCSBBMapView
+      selectedRoomLatitude={selectedRoomLatitude}
+      selectedRoomLongitude={selectedRoomLongitude} />
     </>
   );
 }
+}
 
-MapScreen.navigationOptions = {
-  header: null,
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -42,3 +54,5 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
   },
 });
+
+export default MapScreen;

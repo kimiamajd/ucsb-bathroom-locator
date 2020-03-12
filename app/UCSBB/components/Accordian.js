@@ -13,44 +13,49 @@ export default class Accordian extends Component{
           expanded : false,
         }
     }
-  
-  render() {
 
-    return (
-       <View>
-            <TouchableOpacity style={styles.row} onPress={()=>this.toggleExpand()}>
-                <Text style={[styles.title]}>{this.props.title}</Text>
-                <Icon name={this.state.expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={30} color={'#5E5E5E'} />
-            </TouchableOpacity>
-            <View style={styles.parentHr}/>
-            {
-                this.state.expanded &&
-                <View style={{}}>
-                    <FlatList
-                    data={this.state.data}
-                    numColumns={1}
-                    scrollEnabled={false}
-                    renderItem={({item, index}) => (
-                        <View>
-                            <TouchableOpacity style={[styles.childRow, item.gender == 'male' ? styles.male : styles.female]} onPress = {() => {this.props.navigation.navigate('Map') }}>
-                                <Text style={[styles.font, styles.listItemText]} >{item.room}</Text>
-                                <View style={styles.genderIcons}>
-                                    <InfoIcon name={item.gender == 'neutral' ? 'user' : item.gender} size={24} />
-                                </View>
-                                    <InfoIcon name={item.access} size = {24}/>
-        
-                            </TouchableOpacity>
-                            <View style={styles.childHr}/>
-                        </View>
-                    )}
-                    keyExtractor={item => item.ID}
-                    />
-                </View>
-            }
+    goToMap(item) {                             
+        this.props.navigation.push('Map', {latitude: item.latitude, longitude: item.longitude});
+    }
+
+
+    render() {
+
+        return (
+        <View>
+                <TouchableOpacity style={styles.row} onPress={()=>this.toggleExpand()}>
+                    <Text style={[styles.title]}>{this.props.title}</Text>
+                    <Icon name={this.state.expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={30} color={'#5E5E5E'} />
+                </TouchableOpacity>
+                <View style={styles.parentHr}/>
+                {
+                    this.state.expanded &&
+                    <View style={{}}>
+                        <FlatList
+                        data={this.state.data}
+                        numColumns={1}
+                        scrollEnabled={false}
+                        renderItem={({item, index}) => (
+                            <View>
+                                <TouchableOpacity style={[styles.childRow, item.gender == 'male' ? styles.male : styles.female]} onPress = {() => {this.props.navigation.push('Map', {latitude: item.latitude, longitude: item.longitude})}}>
+                                    <Text style={[styles.font, styles.listItemText]} >{item.room}</Text>
+                                    <View style={styles.genderIcons}>
+                                        <InfoIcon name={item.gender == 'neutral' ? 'user' : item.gender} size={24} />
+                                    </View>
+                                        <InfoIcon name={item.access} size = {24}/>
             
-       </View>
-    )
-  }
+                                </TouchableOpacity>
+                                <View style={styles.childHr}/>
+                            </View>
+                        )}
+                        keyExtractor={item => item.ID}
+                        />
+                    </View>
+                }
+                
+        </View>
+        )
+    }
 
   onClick=(index)=>{
     const temp = this.state.data.slice()

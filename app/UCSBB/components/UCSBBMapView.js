@@ -85,7 +85,7 @@ export default class UCSBBMapView extends Component {
 		this.reloader = this.props.navigation.addListener('didFocus', () => {
 			this.reload();
 		})
-		await this.loadMarkers("male", true);
+		await this.loadMarkers("all", true);
 		getCurrentLocation().then(location => {
 		if(location){
 			this.state.camera = {

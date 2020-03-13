@@ -7,8 +7,6 @@ import {
   Dimensions,
   AsyncStorage,
 } from 'react-native';
-import CollapsibleList from "react-native-collapsible-list";
-import ListElement from '../components/ListElement';
 import { MonoText } from '../components/StyledText';
 import {db} from '../firebase.js';
 import Accordian from '../components/Accordian'

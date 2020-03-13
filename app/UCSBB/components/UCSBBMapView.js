@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Text, AsyncStorage } from 'react-native';
 import {db} from '../firebase.js';
 
 var rootRef = db.ref('/Buildings');
@@ -10,6 +10,7 @@ var buildingList;
 // retrieve keys
 rootRef.once("value", (snapshot) =>{
 	var data = snapshot.val();
+	console.log(data)
 	buildingList = Object.keys(data);
 });
 
@@ -26,14 +27,11 @@ export const getCurrentLocation = () => {
 };
 
 export default class UCSBBMapView extends Component {
-
 	//Gender must be either "male", "female", or "all" or else this will not work!!
-	loadMarkers(gender, accessibility){
-		var genders = ["male", "female", "all"];
-		if( !genders.includes(gender) ){
-			console.error("Gender must be male, female, or all");
-		}
-
+	loadMarkers = async (gender, accessibility) => {
+		this.setState({
+			markers: []
+		})
 		rootRef.on("value", (snapshot) => {
 			let data = snapshot.val();
 			let buildingList = Object.keys(data);
@@ -46,6 +44,7 @@ export default class UCSBBMapView extends Component {
 					snapshot.forEach( (child) => {
 						//val() gets the actual data from each of the objects
 						let data = child.val();
+						console.log('Hello')
 						var genderColor = "rgb(255,20,147)";
 
 						if(data.Gender == "female"){
@@ -80,8 +79,33 @@ export default class UCSBBMapView extends Component {
 		
 	}
 
-	componentDidMount(){
-		this.loadMarkers("all", true);
+	componentDidMount = async () =>{
+		this.reloader = this.props.navigation.addListener('didFocus', () => {
+			this.reload();
+		})
+		await this.loadMarkers("male", true);
+		getCurrentLocation().then(location => {
+		if(location){
+			this.state.camera = {
+				center: {
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude
+				}
+			}
+		}
+	});
+	}
+
+	componentWillUnmount() {
+		this.reloader.remove()
+	}
+
+	reload = async () => {
+		console.log('reloading map')
+		let genderKey = await AsyncStorage.getItem('genderPreference');
+		let access = await AsyncStorage.getItem('accessibility');
+		let genderMap = {0: "all", 1: "male", 2: "female"}
+		this.loadMarkers(genderMap[genderKey], access)
 	}
 
 	constructor(props) {
@@ -102,21 +126,6 @@ export default class UCSBBMapView extends Component {
 		}
 	}
 
-	componentDidMount() {
-    return getCurrentLocation().then(position => {
-      if (position) {
-        this.setState({
-          region: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.003,
-            longitudeDelta: 0.003,
-          },
-        });
-      }
-    });
-  }
-
 	onRegionChange(region) {
 		this.setState({region});
 	}
@@ -133,6 +142,7 @@ export default class UCSBBMapView extends Component {
 			showsUserLocation = {true}
 			showsMyLocationButton = {true}
 			minZoomLevel = {15}
+			onPress = {() => this.reload()}
 			mapPadding={{top: 0, right: 0, bottom: 50, left: 0}} // For position of location button
 			>
 			{

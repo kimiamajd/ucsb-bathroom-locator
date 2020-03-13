@@ -6,6 +6,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import { Card, Text, ButtonGroup, Button } from 'react-native-elements';
+import { reload } from '../controllers/Controller.js'
 
 const ACCESSIBILITY_TOGGLE_KEY = 'accessibility';
 const GENDER_PREFERENCE_KEY = 'genderPreference';
@@ -94,6 +95,10 @@ export default class Home extends Component {
     this.storegenderPreferences(GENDER_PREFERENCE_KEY, 0);
   }
 
+  applySettings = () => {
+    this.props.navigation.navigate('Map')
+  }
+
   render() {
     const genderPreferenceIndex = this.props.navigation.state.params ?
       this.props.navigation.state.params.genderPreferenceIndex : 0;
@@ -152,6 +157,15 @@ export default class Home extends Component {
           }}
           onPress={this.restoreDefaults}
           title="Restore Defaults"
+        />
+        <Button
+          containerStyle={styles.restoreButtonContainer}
+          buttonStyle={{
+            padding: 16,
+            backgroundColor: 'purple'
+          }}
+          onPress={this.applySettings}
+          title="Apply"
         />
 
       </View>

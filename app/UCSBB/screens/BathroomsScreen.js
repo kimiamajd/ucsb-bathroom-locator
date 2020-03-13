@@ -12,7 +12,6 @@ import {db} from '../firebase.js';
 import Accordian from '../components/Accordian'
 import { YellowBox } from 'react-native';
 
-import { Button} from 'react-native';
 
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 YellowBox.ignoreWarnings(['Warning: Failed prop type: Invalid prop']);
@@ -58,8 +57,10 @@ class BathroomsScreen extends React.Component {
           room: rootRef.child(buildingList[i]).child(roomList[j]).key,
           gender: data[roomList[j]].Gender,
           access: accessChair,
+          latitude: data[room].Latitude,
+          longitude: data[room].Longitude,
         });
-      }    
+      }
       viewsArray.push(views);
       //push array with room info into an array where each element contains an array of roominfo for a specific building
       });

@@ -38,13 +38,13 @@ export default class UCSBBMapView extends Component {
 
 			this.state.buildings = buildingList;
 			var views = [];
+			let counter = 0;
 			for(var i=0; i<buildingList.length; i++){
 				rootRef.child(buildingList[i]).once("value", function(snapshot){
 					//forEach iterates through all the results
 					snapshot.forEach( (child) => {
 						//val() gets the actual data from each of the objects
 						let data = child.val();
-						console.log('Hello')
 						var genderColor = "rgb(255,20,147)";
 
 						if(data.Gender == "female"){
@@ -57,7 +57,9 @@ export default class UCSBBMapView extends Component {
 							genderColor = "#32CD32";
 						}
 						let mf = ["male", "female"]
-						let followsGender = !mf.includes(gender) || data.Gender == gender;
+						console.log(data.Gender, gender)
+						let followsGender = !(mf.includes(gender)) || data.Gender == gender;
+						console.log(followsGender)
 						let followsAccessibility = !(accessibility && !data.Accessibility);
 						//ensure that latitude and longitude exist and that accesibility rules from settings are followed
 						if(data.Latitude && data.Longitude && followsAccessibility && followsGender){

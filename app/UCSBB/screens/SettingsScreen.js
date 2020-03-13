@@ -6,7 +6,6 @@ import {
   AsyncStorage
 } from 'react-native';
 import { Card, Text, ButtonGroup, Button } from 'react-native-elements';
-import { reload } from '../controllers/Controller.js'
 
 const ACCESSIBILITY_TOGGLE_KEY = 'accessibility';
 const GENDER_PREFERENCE_KEY = 'genderPreference';

@@ -45,6 +45,9 @@ export default class UCSBBMapView extends Component {
 					snapshot.forEach( (child) => {
 						//val() gets the actual data from each of the objects
 						let data = child.val();
+						let access = data.Accessibility ? ', acc.' : '';
+						let desc = child.key + ' (' + data.Gender + access + ')';
+
 						var genderColor = "rgb(255,20,147)";
 
 						if(data.Gender == "female"){
@@ -57,17 +60,25 @@ export default class UCSBBMapView extends Component {
 							genderColor = "#32CD32";
 						}
 						let mf = ["male", "female"]
-						console.log(data.Gender, gender)
-						let followsGender = !(mf.includes(gender)) || data.Gender == gender;
+						let followsGender = !(mf.includes(gender)) || data.Gender == gender || data.Gender == 'neutral';
 						console.log(followsGender)
 						let followsAccessibility = !(accessibility && !data.Accessibility);
+						
 						//ensure that latitude and longitude exist and that accesibility rules from settings are followed
 						if(data.Latitude && data.Longitude && followsAccessibility && followsGender){
+							for(let i = 0; i < views.length; ++i){
+								if(data.Latitude == views[i].coordinates.latitude && data.Longitude == views[i].coordinates.longitude){
+									if(genderColor != views[i].pinColor)
+										views[i].pinColor = '#ba24ff'
+									views[i].description += ', ' + desc;
+									return;
+								}
+							}
 							views.push({
-								title: child.key,
+								title: buildingList[i],
 								coordinates: {latitude: data.Latitude, longitude: data.Longitude},
 								pinColor: genderColor,
-								description: data.Gender,
+								description: desc,
 							})}
 						})
 				}
@@ -118,7 +129,7 @@ export default class UCSBBMapView extends Component {
 					latitude: LAT,
 					longitude: LONG,
 				},
-				zoom: 15,
+				zoom: 18,
 				pitch: 0,
 				heading: 0,
 				altitude: 0
@@ -144,7 +155,6 @@ export default class UCSBBMapView extends Component {
 			showsUserLocation = {true}
 			showsMyLocationButton = {true}
 			minZoomLevel = {15}
-			onPress = {() => this.reload()}
 			mapPadding={{top: 0, right: 0, bottom: 50, left: 0}} // For position of location button
 			>
 			{
